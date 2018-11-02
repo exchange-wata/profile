@@ -29,7 +29,8 @@ a {
   a:hover, a:active, a:focus {
     color: #2c98f0;
     outline: none;
-    text-decoration: none !important; }
+    /*text-decoration: none !important; }*/
+    text-decoration: none; }
 
 p {
   margin-bottom: 1.5em; }
