@@ -3,6 +3,40 @@
 	session_start();
 	require("dbconnect.php");
 
+	// 訪問者にidふる
+	// mt_rand:任意の数字の羅列を作成
+	if (empty($_SESSTION["id"])) {
+		$user_id = mt_rand();
+		$_SESSTION["id"] = $user_id;
+	}
+
+	// いいねが押された時
+		// like.phpに飛ぶ
+		// insert -> 条件：「選択されたもののID」かつ「サイトを見とる人のID」
+
+	// いいねが取り消された時
+		//unlike.phpへ
+		//delete ->条件：「選択されたもののID」かつ「ユーザーIDがセッションIDのもの」
+
+	//DBの中に「ID」「サービス名」「URL」「画像」
+		//DBに追加する専用のページを作っても良いかも
+		//PW等で識別 
+	$works_sql = 'SELECT * FROM `works`';
+	
+	$works_data = array();
+	$works_stmt = $dbh->prepare($works_sql);
+	$works_stmt->execute($works_data);
+
+	while (true) {
+	    $works = $works_stmt -> fetch(PDO::FETCH_ASSOC);
+
+	    if ($works == false) {
+	        break;
+	    }
+	    $my_works[] = $works;
+	}
+
+	
 ?>
 
 <!DOCTYPE HTML>
@@ -34,26 +68,26 @@
 	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" rel="stylesheet">
 	
 	<!-- Animate.css -->
-	<link rel="stylesheet" href="css/animate.css">
+	<link rel="stylesheet" href="assets/css/animate.css">
 	<!-- Icomoon Icon Fonts-->
-	<link rel="stylesheet" href="css/icomoon.css">
+	<link rel="stylesheet" href="assets/css/icomoon.css">
 	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="assets/css/bootstrap.css">
 	<!-- Flexslider  -->
-	<link rel="stylesheet" href="css/flexslider.css">
+	<link rel="stylesheet" href="assets/css/flexslider.css">
 	<!-- Flaticons  -->
-	<link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+	<link rel="stylesheet" href="assets/fonts/flaticon/font/flaticon.css">
 	<!-- Owl Carousel -->
-	<link rel="stylesheet" href="css/owl.carousel.min.css">
-	<link rel="stylesheet" href="css/owl.theme.default.min.css">
+	<link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
 	<!-- Theme style  -->
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/my_style.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/my_style.css">
 	<!-- fontawesome -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
 	<!-- Modernizr JS -->
-	<script src="js/modernizr-2.6.2.min.js"></script>
+	<script src="assets/js/modernizr-2.6.2.min.js"></script>
 	<!-- s<script src="js/svgxuse.js"></script> -->
 	<!-- FOR IE9 below -->
 	<!--[if lt IE 9]>
@@ -67,8 +101,8 @@
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="border js-fullheight">
 			<div class="text-center">
-				<div class="author-img" style="background-image: url(images/前撮り_180407_0026.jpg);"></div>
-				<h1 id="colorlib-logo"><a href="index.html">Mizuki Watanabe</a></h1>
+				<div class="author-img" style="background-image: url(assets/images/前撮り_180407_0027.jpg);"></div>
+				<h1 id="colorlib-logo"><a href="#">Mizuki Watanabe</a></h1>
 				<span class="position"><a href="#">Engineer</a> in Cebu/Japan</span>
 			</div>
 			<nav id="colorlib-main-menu" role="navigation" class="navbar">
@@ -105,7 +139,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			<section id="colorlib-hero" class="js-fullheight" data-section="home">
 				<div class="flexslider js-fullheight">
 					<ul class="slides">
-				   	<li style="background-image: url(images/mizuki.jpg);">
+				   	<li style="background-image: url(assets/images/mizuki.jpg);">
 				   		<div class="overlay"></div>
 				   		<div class="container-fluid">
 				   			<div class="row">
@@ -120,7 +154,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					   		</div>
 				   		</div>
 				   	</li>
-				   	<li style="background-image: url(images/img_bg_2.jpg);">
+				   	<li style="background-image: url(assets/images/img_bg_2.jpg);">
 				   		<div class="overlay"></div>
 				   		<div class="container-fluid">
 				   			<div class="row">
@@ -446,60 +480,68 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							<p class="work-menu">
 								<!-- <span><a href="#" class="active">Graphic Design</a></span> -->
 								<!-- <span><a href="#">Web Design</a></span> -->
-								<span><a href="#repo">Repository</a></span>
-								<span><a href="#web">WebSite</a></span></p>
+								<!-- <span><a href="#repo">Repository</a></span> -->
+								<!-- <span><a href="#web">WebSite</a></span></p> -->
+								<span>WebSite</span></p>
 						</div>
 					</div>
 					<div class="row">
-						<div id="web" class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-							<div class="project" style="background-image: url(images/philia2.png);">
-								<div class="desc">
-									<div class="con">
-										<h3><a href="work.html">PHILIALE</a></h3>
-										<span>Website</span>
-										<p class="icon">
-											<span><a href="#"><i class="icon-share3"></i></a></span>
-											<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-											<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-										</p>
+
+						<!-- foreach -->
+						<?php foreach ($my_works as $work): ?>							
+							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
+								<div class="project" style="background-image: url(assets/images/<?php echo $work["img"]; ?>);">
+									<div class="desc">
+										<div class="con">
+											<h3><a href="work.html"><?php echo $work["name"]; ?></a></h3>
+											<span>Website</span>
+											<p class="icon">
+												<span><a href="<?php echo $work["url"]; ?>" target="_blanck"><i class="icon-share3"></i></a></span>
+												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
+												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
+											</p>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div id="web" class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-							<div class="project" style="background-image: url(images/skill_test.png);">
+						<?php endforeach ?>
+						<!-- foreachここまで -->
+
+
+						<!-- <div id="web" class="col-md-6 animate-box" data-animate-effect="fadeInRight">
+							<div class="project" style="background-image: url(assets/images/skill_test.png);">
 								<div class="desc">
 									<div class="con">
 										<h3><a href="work.html">Skill Test</a></h3>
 										<span>Website</span>
 										<p class="icon">
-											<span><a href="#"><i class="icon-share3"></i></a></span>
+											<span><a href="http://localhost/Skill_Test/top.php" target="_blanck"><i class="icon-share3"></i></a></span>
 											<span><a href="#"><i class="icon-eye"></i> 100</a></span>
 											<span><a href="#"><i class="icon-heart"></i> 49</a></span>
 										</p>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div id="repo" class="col-md-6 animate-box" data-animate-effect="fadeInTop">
-							<div class="project" style="background-image: url(images/github_cat.jpg);">
+						</div> -->
+						<!-- <div id="repo" class="col-md-6 animate-box" data-animate-effect="fadeInTop">
+							<div class="project" style="background-image: url(assets/images/github_cat.jpg);">
 								<div class="desc">
 									<div class="con">
 										<h3><a href="work.html">github</a></h3>
 										<span>Repository</span>
 										<p class="icon">
-											<span><a href="#"><i class="icon-share3"></i></a></span>
+											<span><a href="https://github.com/exchange-wata" target="_blanck"><i class="icon-share3"></i></a></span>
 											<span><a href="#"><i class="icon-eye"></i> 100</a></span>
 											<span><a href="#"><i class="icon-heart"></i> 49</a></span>
 										</p>
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> -->
 					</div>
 					<div class="row">
 						<div class="col-md-12 animate-box">
-							<p><a href="#" class="btn btn-primary btn-lg btn-load-more">Coming Soon.... <i class="icon-reload"></i></a></p>
+							<p><a href="add_works.php" class="btn btn-primary btn-lg btn-load-more" target="_blanck">Coming Soon.... <i class="icon-reload"></i></a></p>
 						</div>
 					</div>
 				</div>
