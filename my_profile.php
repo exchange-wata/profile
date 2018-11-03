@@ -104,6 +104,7 @@
 				<div class="author-img" style="background-image: url(assets/images/前撮り_180407_0027.jpg);"></div>
 				<h1 id="colorlib-logo"><a href="#">Mizuki Watanabe</a></h1>
 				<span class="position"><a href="#">Engineer</a> in Cebu/Japan</span>
+				<span class="position"><a href="https://github.com/exchange-wata" target="_blanck">https://github.com/exchange-wata</a></span>
 			</div>
 			<nav id="colorlib-main-menu" role="navigation" class="navbar">
 				<div id="navbar" class="collapse">
