@@ -1,29 +1,16 @@
 <?php
-// session変数を使えるようにする→今ログインしとるユーザー
-	// session_start(); 
+	session_start();
+	require("dbconnect.php");
 
+	$user_id = $_SESSION["id"];
+	$works_id = $_GET["works_id"];
 
-// DB接続
-	require('dbconnect.php');
-
-
-// feed_idを取得 <-GET送信で送られてきとる前提
-	$feed_id=$_GET["feed_id"];
-
-
-// データを増やす=>insert
-// SQL文作成
-	// $sql='insert into likes
-	// 	  set user_id=?,feed_id?';
-	$sql='INSERT INTO `likes` (`id`) VALUES (NULL, ?,?)';
-
-// SQL文実行
-	$data=array($feed_id);
+	// $sql='INSERT INTO `works` (`user_id`, `works_id`) VALUES (NULL, ?,?)';
+	$sql='INSERT `likes` SET `user_id` = ?, `works_id` = ?';
+	$data=array($_SESSION["id"],$works_id);
 	$stmt=$dbh->prepare($sql);
     $stmt->execute($data);
 
-
-// 一覧に戻る
 	header("Location:my_profile.php");
 
 ?>

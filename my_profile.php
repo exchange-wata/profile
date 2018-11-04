@@ -7,16 +7,8 @@
 	// mt_rand:任意の数字の羅列を作成
 	if (empty($_SESSTION["id"])) {
 		$user_id = mt_rand();
-		$_SESSTION["id"] = $user_id;
+		$_SESSION["id"] = $user_id;
 	}
-
-	// いいねが押された時
-		// like.phpに飛ぶ
-		// insert -> 条件：「選択されたもののID」かつ「サイトを見とる人のID」
-
-	// いいねが取り消された時
-		//unlike.phpへ
-		//delete ->条件：「選択されたもののID」かつ「ユーザーIDがセッションIDのもの」
 
 	//DBの中に「ID」「サービス名」「URL」「画像」
 		//DBに追加する専用のページを作っても良いかも
@@ -27,14 +19,70 @@
 	$works_stmt = $dbh->prepare($works_sql);
 	$works_stmt->execute($works_data);
 
+	$my_works = array();
+	$tmp_works = array();
+
 	while (true) {
-	    $works = $works_stmt -> fetch(PDO::FETCH_ASSOC);
+	    $works = $works_stmt->fetch(PDO::FETCH_ASSOC);
 
 	    if ($works == false) {
 	        break;
 	    }
-	    $my_works[] = $works;
+	    // $my_works[] = $works;
+	    $tmp_works = $works;
+
+	 //    echo "<pre>";
+	 //    var_dump($my_works);
+		// echo "</pre>";
+	    
+		
+		// いいねが押された時
+		// like.phpに飛ぶ
+		// insert -> 条件：「選択されたもののID」かつ「サイトを見とる人のID」
+
+		// like数を取得するSQL文を作成
+		$like_sql ='SELECT COUNT(*) AS `like_cnt` FROM `likes` WHERE `works_id`=?';
+		$like_data = array($tmp_works['id']);          
+
+
+		// SQL文を実行
+		$like_stmt = $dbh->prepare($like_sql);
+		$like_stmt->execute($like_data);
+
+
+		// like数を取得
+		$like = $like_stmt->fetch(PDO::FETCH_ASSOC);
+		// $like=array("like_cnt"=>5);
+		// $my_works['like_cnt'] = $like['like_cnt'];
+		$tmp_works['like_cnt'] = $like['like_cnt'];
+		$my_works[] = $tmp_works;
+
+		// // like済みか判断するSQLを作成
+		// $like_flag_sql='SELECT count(*) as `like_flag` FROM `likes` WHERE `user_id`=? and `works_id`=?';
+
+		// // SQL文を実行
+		// $like_flag_data = array($_SESSION["id"],);          
+
+		// $like_flag_stmt = $dbh->prepare($like_flag_sql);
+		// $like_flag_stmt->execute($like_flag_data);
+
+		// // like数を取得
+		// $like_flag=$like_flag_stmt->fetch(PDO::FETCH_ASSOC);
+		// if ($like_flag["like_flag"]>0) {
+		//   $my_works["like_flag"]=1;            
+		// }
+		// else{
+		//   $my_works["like_flag"]=0;
+		// }
 	}
+
+
+	
+
+
+	// いいねが取り消された時
+		//unlike.phpへ
+		//delete ->条件：「選択されたもののID」かつ「ユーザーIDがセッションIDのもの」
 
 	
 ?>
@@ -103,8 +151,8 @@
 			<div class="text-center">
 				<div class="author-img" style="background-image: url(assets/images/前撮り_180407_0027.jpg);"></div>
 				<h1 id="colorlib-logo"><a href="#">Mizuki Watanabe</a></h1>
-				<span class="position"><a href="#">Engineer</a> in Cebu/Japan</span>
-				<span class="position"><a href="https://github.com/exchange-wata" target="_blanck">https://github.com/exchange-wata</a></span>
+				<span class="position"><a href="#" class="original_a">Engineer</a> in Cebu/Japan</span>
+				<span class="position"><a href="https://github.com/exchange-wata">https://github.com/exchange-wata</a></span>
 			</div>
 			<nav id="colorlib-main-menu" role="navigation" class="navbar">
 				<div id="navbar" class="collapse">
@@ -370,7 +418,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 									    </div>
 									    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
 									        <div class="panel-body">
-									            <!-- <p><strong></strong></p>	 -->
 									            <ul>
 									            	<li>Chikuyo Gakuen High School</li>
 									            </ul>
@@ -387,7 +434,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 									    </div>
 									    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
 									        <div class="panel-body">
-									            <!-- <p><strong></strong></p>	 -->
 									            <ul>
 									            	<li>Tokyo Metropolitan University</li>
 									            </ul>	
@@ -404,7 +450,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 									    </div>
 									    <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
 									        <div class="panel-body">
-									            <!-- <p><strong></strong></p>	 -->
 									            <ul>
 									            	<li>NexSeed</li>
 									            </ul>	
@@ -479,17 +524,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					<div class="row row-bottom-padded-sm animate-box" data-animate-effect="fadeInLeft">
 						<div class="col-md-12">
 							<p class="work-menu">
-								<!-- <span><a href="#" class="active">Graphic Design</a></span> -->
-								<!-- <span><a href="#">Web Design</a></span> -->
-								<!-- <span><a href="#repo">Repository</a></span> -->
-								<!-- <span><a href="#web">WebSite</a></span></p> -->
 								<span>WebSite</span></p>
 						</div>
 					</div>
 					<div class="row">
 
 						<!-- foreach -->
-						<?php foreach ($my_works as $work): ?>							
+						<?php foreach ($my_works as $work): ?>								
 							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
 								<div class="project" style="background-image: url(assets/images/<?php echo $work["img"]; ?>);">
 									<div class="desc">
@@ -499,7 +540,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 											<p class="icon">
 												<span><a href="<?php echo $work["url"]; ?>" target="_blanck"><i class="icon-share3"></i></a></span>
 												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-												<span><a href="#"><i class="icon-heart"></i> 49</a></span>
+												<span><a href="like.php?works_id=<?php echo $work["id"]; ?>"><i class="icon-heart"></i><?php echo $work["like_cnt"]; ?></a></span>
 											</p>
 										</div>
 									</div>
@@ -508,37 +549,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						<?php endforeach ?>
 						<!-- foreachここまで -->
 
-
-						<!-- <div id="web" class="col-md-6 animate-box" data-animate-effect="fadeInRight">
-							<div class="project" style="background-image: url(assets/images/skill_test.png);">
-								<div class="desc">
-									<div class="con">
-										<h3><a href="work.html">Skill Test</a></h3>
-										<span>Website</span>
-										<p class="icon">
-											<span><a href="http://localhost/Skill_Test/top.php" target="_blanck"><i class="icon-share3"></i></a></span>
-											<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-											<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-										</p>
-									</div>
-								</div>
-							</div>
-						</div> -->
-						<!-- <div id="repo" class="col-md-6 animate-box" data-animate-effect="fadeInTop">
-							<div class="project" style="background-image: url(assets/images/github_cat.jpg);">
-								<div class="desc">
-									<div class="con">
-										<h3><a href="work.html">github</a></h3>
-										<span>Repository</span>
-										<p class="icon">
-											<span><a href="https://github.com/exchange-wata" target="_blanck"><i class="icon-share3"></i></a></span>
-											<span><a href="#"><i class="icon-eye"></i> 100</a></span>
-											<span><a href="#"><i class="icon-heart"></i> 49</a></span>
-										</p>
-									</div>
-								</div>
-							</div>
-						</div> -->
 					</div>
 					<div class="row">
 						<div class="col-md-12 animate-box">
@@ -579,11 +589,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
 							<div class="colorlib-feature colorlib-feature-sm animate-box" data-animate-effect="fadeInLeft">
 								<div class="colorlib-icon">
-									<!-- <i class="icon-phone"></i> -->
-									<i class="fab fa-slack"></i>
+									<i class="icon-social-github"></i>
 								</div>
 								<div class="colorlib-text">
-									<p><a href="https://engineer-class.slack.com/messages/CCQKVD831/">Please visit this room when you need help!</a></p>
+									<p><a href="https://github.com/exchange-wata"></a>follow me!</p>
 								</div>
 							</div>
 						</div>
@@ -620,23 +629,23 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</div><!-- end:colorlib-page -->
 
 	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
+	<script src="assets/js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
+	<script src="assets/js/jquery.easing.1.3.js"></script>
 	<!-- Bootstrap -->
-	<script src="js/bootstrap.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
 	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
+	<script src="assets/js/jquery.waypoints.min.js"></script>
 	<!-- Flexslider -->
-	<script src="js/jquery.flexslider-min.js"></script>
+	<script src="assets/js/jquery.flexslider-min.js"></script>
 	<!-- Owl carousel -->
-	<script src="js/owl.carousel.min.js"></script>
+	<script src="assets/js/owl.carousel.min.js"></script>
 	<!-- Counters -->
-	<script src="js/jquery.countTo.js"></script>
+	<script src="assets/js/jquery.countTo.js"></script>
 	
 	
 	<!-- MAIN JS -->
-	<script src="js/main.js"></script>
+	<script src="assets/js/main.js"></script>
 
 	</body>
 </html>
