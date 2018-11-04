@@ -36,11 +36,6 @@
 		        $data = array($name,$url,$img);
 		    } 
 
-		    // else {
-		    //     $sql  = 'INSERT `works` SET `name` = ?, `url` = ?';
-		    //     $data = array($name,$url);
-		    // }
-
 		    $stmt = $dbh->prepare($sql);
 		    $stmt->execute($data);
 
