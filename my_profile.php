@@ -3,16 +3,11 @@
 	session_start();
 	require("dbconnect.php");
 
-	// 訪問者にidふる
-	// mt_rand:任意の数字の羅列を作成
-	if (empty($_SESSTION["id"])) {
+	if (empty($_SESSION["id"])) {
 		$user_id = mt_rand();
 		$_SESSION["id"] = $user_id;
 	}
 
-	//DBの中に「ID」「サービス名」「URL」「画像」
-		//DBに追加する専用のページを作っても良いかも
-		//PW等で識別 
 	$works_sql = 'SELECT * FROM `works`';
 	
 	$works_data = array();
@@ -28,62 +23,33 @@
 	    if ($works == false) {
 	        break;
 	    }
-	    // $my_works[] = $works;
+	
 	    $tmp_works = $works;
 
-	 //    echo "<pre>";
-	 //    var_dump($my_works);
-		// echo "</pre>";
-	    
-		
-		// いいねが押された時
-		// like.phpに飛ぶ
-		// insert -> 条件：「選択されたもののID」かつ「サイトを見とる人のID」
-
-		// like数を取得するSQL文を作成
 		$like_sql ='SELECT COUNT(*) AS `like_cnt` FROM `likes` WHERE `works_id`=?';
 		$like_data = array($tmp_works['id']);          
-
-
-		// SQL文を実行
 		$like_stmt = $dbh->prepare($like_sql);
 		$like_stmt->execute($like_data);
 
-
-		// like数を取得
 		$like = $like_stmt->fetch(PDO::FETCH_ASSOC);
-		// $like=array("like_cnt"=>5);
-		// $my_works['like_cnt'] = $like['like_cnt'];
 		$tmp_works['like_cnt'] = $like['like_cnt'];
-		$my_works[] = $tmp_works;
-
-		// // like済みか判断するSQLを作成
-		// $like_flag_sql='SELECT count(*) as `like_flag` FROM `likes` WHERE `user_id`=? and `works_id`=?';
-
-		// // SQL文を実行
-		// $like_flag_data = array($_SESSION["id"],);          
-
-		// $like_flag_stmt = $dbh->prepare($like_flag_sql);
-		// $like_flag_stmt->execute($like_flag_data);
-
-		// // like数を取得
-		// $like_flag=$like_flag_stmt->fetch(PDO::FETCH_ASSOC);
-		// if ($like_flag["like_flag"]>0) {
-		//   $my_works["like_flag"]=1;            
-		// }
-		// else{
-		//   $my_works["like_flag"]=0;
-		// }
-	}
-
-
 	
+		$like_flag_sql='SELECT count(*) as `like_flag` FROM `likes` WHERE `user_id`=? and `works_id`=?';
+		$like_flag_data = array($_SESSION["id"],$tmp_works['id']);          
+		$like_flag_stmt = $dbh->prepare($like_flag_sql);
+		$like_flag_stmt->execute($like_flag_data);
 
+		$like_flag=$like_flag_stmt->fetch(PDO::FETCH_ASSOC);
 
-	// いいねが取り消された時
-		//unlike.phpへ
-		//delete ->条件：「選択されたもののID」かつ「ユーザーIDがセッションIDのもの」
+		if ($like_flag["like_flag"]>0) {
+		  $tmp_works["like_flag"]=1;            
+		}
+		else{
+		  $tmp_works["like_flag"]=0;
+		}
 
+		$my_works[] = $tmp_works;
+	}
 	
 ?>
 
@@ -110,7 +76,8 @@
 	<meta name="twitter:card" content="" />
 
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-	<link rel="shortcut icon" href="favicon.ico">
+	<!-- <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon"> -->
+	<link rel="icon" href="favicon.ico">
 
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700" rel="stylesheet">
@@ -151,7 +118,7 @@
 			<div class="text-center">
 				<div class="author-img" style="background-image: url(assets/images/前撮り_180407_0027.jpg);"></div>
 				<h1 id="colorlib-logo"><a href="#">Mizuki Watanabe</a></h1>
-				<span class="position"><a href="#" class="original_a">Engineer</a> in Cebu/Japan</span>
+				<span id="margin" class="position"><a href="#" class="original_a">Engineer</a> in Cebu/Japan</span>
 				<span class="position"><a href="https://github.com/exchange-wata">https://github.com/exchange-wata</a></span>
 			</div>
 			<nav id="colorlib-main-menu" role="navigation" class="navbar">
@@ -196,8 +163,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					   				<div class="slider-text-inner js-fullheight">
 					   					<div class="desc">
 					   						<h1>Hi! <br>I'm Mizuki.</h1>
-						   					<h2>100% html5 bootstrap templates Made by <a href="https://colorlib.com/" target="_blank">colorlib.com</a></h2>
-												<p><a class="btn btn-primary btn-learn">Download CV <i class="icon-download4"></i></a></p>
+						   					<!-- <h2>100% html5 bootstrap templates Made by <a href="https://colorlib.com/" target="_blank">colorlib.com</a></h2> -->
+						   					<h2>Thank you for visiting my web site!</h2>
+												<p><a class="btn btn-primary btn-learn" href="#about_me">About Me <i class="icon-download4"></i></a></p>
 											</div>
 					   				</div>
 					   			</div>
@@ -212,8 +180,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					   				<div class="slider-text-inner">
 					   					<div class="desc">
 						   					<h1>I am <br>Japanese.</h1>
-												<h2>100% html5 bootstrap templates Made by <a href="https://colorlib.com/" target="_blank">colorlib.com</a></h2>
-												<p><a class="btn btn-primary btn-learn">View Portfolio <i class="icon-briefcase3"></i></a></p>
+												<!-- <h2>100% html5 bootstrap templates Made by <a href="https://colorlib.com/" target="_blank">colorlib.com</a></h2> -->
+												<h2>I am a pure Japanese. Please don't ask me, "Are you mixed?" Ha,Ha!!</h2>
+												<p><a class="btn btn-primary btn-learn" href="#works">View Portfolio <i class="icon-briefcase3"></i></a></p>
 											</div>
 					   				</div>
 					   			</div>
@@ -231,7 +200,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							<div class="row row-bottom-padded-sm animate-box" data-animate-effect="fadeInLeft">
 								<div class="col-md-12">
 									<div class="about-desc">
-										<span class="heading-meta">About Us</span>
+										<span id="about_me" class="heading-meta">About Me</span>
 										<h2 class="colorlib-heading">Who Am I?</h2>
 										<p><strong>Hi I'm Mizuki Watanabe.</strong> <br>Thank you for coming to my site! You can see about me by scrolling. </p>
 										<p>I am an assistant engineer at Nexseed in Cebu. I am going to support you. <br>I do my best that you will be a great enguneer!</p>
@@ -518,7 +487,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				<div class="colorlib-narrow-content">
 					<div class="row">
 						<div class="col-md-6 col-md-offset-3 col-md-pull-3 animate-box" data-animate-effect="fadeInLeft">
-							<span class="heading-meta">My Work</span>
+							<span id="works" class="heading-meta">My Work</span>
 							<h2 class="colorlib-heading animate-box">Recent Work</h2>
 						</div>
 					</div>
@@ -540,8 +509,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 											<span>Website</span>
 											<p class="icon">
 												<span><a href="<?php echo $work["url"]; ?>" target="_blanck"><i class="icon-share3"></i></a></span>
-												<span><a href="#"><i class="icon-eye"></i> 100</a></span>
+												<!-- <span><a href="#"><i class="icon-eye"></i> 100</a></span> -->
+												<!-- いいねされた時 -->
+												<?php if ($work["like_flag"]==0){ ?>
 												<span><a href="like.php?works_id=<?php echo $work["id"]; ?>"><i class="icon-heart"></i><?php echo $work["like_cnt"]; ?></a></span>
+												<!-- いいねの取り消し -->
+												<?php }else{?>
+												<span><a href="unlike.php?works_id=<?php echo $work["id"]; ?>"><i class="icon-heart"></i><?php echo $work["like_cnt"]; ?></a></span>
+												<?php }?>
 											</p>
 										</div>
 									</div>
