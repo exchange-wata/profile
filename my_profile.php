@@ -195,6 +195,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					   			<div class="col-md-6 col-md-offset-3 col-md-pull-3 col-sm-12 col-xs-12 js-fullheight slider-text">
 					   				<div class="slider-text-inner js-fullheight">
 					   					<div class="desc">
+					   						<h1>Hi! <br>I'm Mizuki.</h1>
 						   					<h2>100% html5 bootstrap templates Made by <a href="https://colorlib.com/" target="_blank">colorlib.com</a></h2>
 												<p><a class="btn btn-primary btn-learn">Download CV <i class="icon-download4"></i></a></p>
 											</div>
@@ -203,14 +204,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					   		</div>
 				   		</div>
 				   	</li>
-				   	<li style="background-image: url(assets/images/img_bg_2.jpg);">
+				   	<li style="background-image: url(assets/images/miuzki2.jpg);">
 				   		<div class="overlay"></div>
 				   		<div class="container-fluid">
 				   			<div class="row">
 					   			<div class="col-md-6 col-md-offset-3 col-md-pull-3 col-sm-12 col-xs-12 js-fullheight slider-text">
 					   				<div class="slider-text-inner">
 					   					<div class="desc">
-						   					<h1>I am <br>a Japanese.</h1>
+						   					<h1>I am <br>Japanese.</h1>
 												<h2>100% html5 bootstrap templates Made by <a href="https://colorlib.com/" target="_blank">colorlib.com</a></h2>
 												<p><a class="btn btn-primary btn-learn">View Portfolio <i class="icon-briefcase3"></i></a></p>
 											</div>
@@ -592,7 +593,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 									<i class="icon-social-github"></i>
 								</div>
 								<div class="colorlib-text">
-									<p><a href="https://github.com/exchange-wata"></a>follow me!</p>
+									<p><a href="https://github.com/exchange-wata">follow me!</a></p>
 								</div>
 							</div>
 						</div>
